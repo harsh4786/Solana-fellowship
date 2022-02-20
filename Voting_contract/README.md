@@ -1,1 +1,1 @@
- This program could be further improvised but was short of time.
+ This program could be further improvised with additional functionality probably extending it to quadratic voting.
