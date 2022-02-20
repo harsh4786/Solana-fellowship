@@ -14,13 +14,22 @@ pub mod voting {
         Ok(())
     }
     pub fn delegate(ctx: Context<Delegate>, from_voter: Pubkey, to_voter: Pubkey) -> ProgramResult {
-        let from_voter = &mut ctx.accounts.from_voter;
+        if &ctx.accounts.from_voter.to_account_info().key == &ctx.accounts.to_voter.to_account_info().key {
+            return Err(ErrorCode::CannotSelfDelegate.into());
+        }
+        else if ctx.accounts.from_voter.has_voted == true{
+            return Err(ErrorCode::AlreadyDelegated.into());
+        }
+        else { 
+        let from_voter = &mut ctx.accounts.from_voter.to_account_info().key;
         let to_voter = &mut ctx.accounts.to_voter; 
         ctx.accounts.from_voter.has_voted = true;
+        }
 
         Ok(())
     }
-    pub fn vote(ctx: Context<Vote>, voter_address: Pubkey, proposal_name: String) -> ProgramResult {
+    pub fn vote(ctx: Context<Vote>, voter_address: Pubkey, proposal_ID: u8) -> ProgramResult {
+    
         let voting_status =  ctx.accounts.voter.has_voted;
         if voting_status == true {
             return Err(ErrorCode::AlreadyVoted.into());
@@ -31,7 +40,8 @@ pub mod voting {
 
         else {
             ctx.accounts.voter.has_voted = true;
-            ctx.accounts.proposal.votes += 1;
+            let votes = ctx.accounts.voter.calculate_votes();
+            ctx.accounts.proposal.votes += votes;
         }
         Ok(())
     }
@@ -118,6 +128,11 @@ pub struct Voter{
     pub has_voted: bool,
     pub vote_weight: u64,
 }
+impl Voter{
+    pub fn calculate_votes(&self) -> u64 {
+        self.votes * self.vote_weight
+    }
+}
 #[account]
 #[derive( PartialEq)]
 pub struct BallotBox {
@@ -158,8 +173,8 @@ pub enum ErrorCode{
     AlreadyVoted,
     #[msg("The proposal you entered does not exist in the ballot")]
     InvalidProposal,
-    #[msg("")]
-    InvalidVote,
+    #[msg("This account has already delegated their vote")]
+    AlreadyDelegated,
     #[msg("You are not authorized to add proposals")]
     NotAuthorizedToAddProposals,
     #[msg("The proposal you entered already exists")]
