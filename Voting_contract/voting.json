@@ -1,0 +1,255 @@
+{
+  "version": "0.1.0",
+  "name": "voting",
+  "instructions": [
+    {
+      "name": "initializeVoting",
+      "accounts": [
+        {
+          "name": "chairperson",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "voter",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ballot",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "chairperson",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "delegate",
+      "accounts": [
+        {
+          "name": "fromVoter",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "toVoter",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ballot",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "fromVoter",
+          "type": "publicKey"
+        },
+        {
+          "name": "toVoter",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "vote",
+      "accounts": [
+        {
+          "name": "voter",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "ballot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "proposal",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "voterAddress",
+          "type": "publicKey"
+        },
+        {
+          "name": "proposalName",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "createProposal",
+      "accounts": [
+        {
+          "name": "chairperson",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "proposal",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "voter",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ballot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "proposalId",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "winningProposal",
+      "accounts": [
+        {
+          "name": "ballot",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Voter",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "voterAddress",
+            "type": "publicKey"
+          },
+          {
+            "name": "votes",
+            "type": "u64"
+          },
+          {
+            "name": "hasVoted",
+            "type": "bool"
+          },
+          {
+            "name": "voteWeight",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BallotBox",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ballotAuthority",
+            "type": "publicKey"
+          },
+          {
+            "name": "proposalList",
+            "type": {
+              "defined": "Box<Vec<Proposal>>"
+            }
+          },
+          {
+            "name": "votes",
+            "type": "u64"
+          },
+          {
+            "name": "winner",
+            "type": {
+              "defined": "Proposal"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Proposal",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u8"
+          },
+          {
+            "name": "votes",
+            "type": "u64"
+          },
+          {
+            "name": "isInitialized",
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AlreadyVoted",
+      "msg": "You have already voted"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidProposal",
+      "msg": "The proposal you entered does not exist in the ballot"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidVote",
+      "msg": ""
+    },
+    {
+      "code": 6003,
+      "name": "NotAuthorizedToAddProposals",
+      "msg": "You are not authorized to add proposals"
+    },
+    {
+      "code": 6004,
+      "name": "ProposalAlreadyExists",
+      "msg": "The proposal you entered already exists"
+    },
+    {
+      "code": 6005,
+      "name": "CannotSelfDelegate",
+      "msg": "Cannot self delegate"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidVoter",
+      "msg": "You are not authorized to vote"
+    }
+  ]
+}
