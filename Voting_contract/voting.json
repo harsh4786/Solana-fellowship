@@ -88,8 +88,8 @@
           "type": "publicKey"
         },
         {
-          "name": "proposalName",
-          "type": "string"
+          "name": "proposalId",
+          "type": "u8"
         }
       ]
     },
@@ -228,8 +228,8 @@
     },
     {
       "code": 6002,
-      "name": "InvalidVote",
-      "msg": ""
+      "name": "AlreadyDelegated",
+      "msg": "This account has already delegated their vote"
     },
     {
       "code": 6003,
