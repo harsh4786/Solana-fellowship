@@ -23,7 +23,6 @@ var transferCmd = &cobra.Command{
 		fmt.Println("Transaction complete.\nTransaction hash: " + txhash)
 	},
 }
-
 func init() {
 	rootCmd.AddCommand(transferCmd)
 
