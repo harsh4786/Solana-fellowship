@@ -1,0 +1,12 @@
+[programs.localnet]
+solblog = "BLoG9PtBTkhUbGRAYVe8jzd5ji1G2VPkzwbsRV3bnteD"
+
+[registry]
+url = "https://anchor.projectserum.com"
+
+[provider]
+cluster = "localnet"
+wallet = "/home/douga/.config/solana/id.json"
+
+[scripts]
+test = "mocha -t 1000000 tests/"
